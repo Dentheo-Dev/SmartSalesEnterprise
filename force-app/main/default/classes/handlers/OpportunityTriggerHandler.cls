@@ -41,6 +41,9 @@ public class OpportunityTriggerHandler extends TriggerHandler {
 
         if (!closedWon.isEmpty()) {
             SlackCalloutService.notifyClosedWon(closedWon);
+            for (Opportunity opp : closedWon) {
+                AIInsightQueueable.enqueue(opp.Id, AIInsightService.TYPE_OPPORTUNITY);
+            }
         }
         if (!amountChanged.isEmpty()) {
             CommissionCalculatorService.calculateCommission(amountChanged);
