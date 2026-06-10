@@ -23,6 +23,12 @@ deploy-result.json
 .env.local
 auth.json
 
+# Claude Code / AI tools
+.claude/
+Skiil.md
+SmartSalesEnterprise_ClaudeCode_Prompt.md
+gh
+
 # Logs
 *.log
 
