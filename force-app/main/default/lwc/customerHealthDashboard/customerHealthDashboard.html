@@ -1,0 +1,79 @@
+<template>
+    <lightning-card title="Saúde do Cliente" icon-name="standard:account">
+        <template lwc:if={isLoading}>
+            <div class="slds-var-p-around_medium slds-align_absolute-center">
+                <lightning-spinner alternative-text="Carregando..." size="small"></lightning-spinner>
+            </div>
+        </template>
+
+        <template lwc:elseif={noRecord}>
+            <div class="slds-var-p-around_medium slds-text-align_center">
+                <p class="slds-text-color_weak slds-var-m-bottom_small">
+                    Nenhum registro de saúde calculado.
+                </p>
+                <lightning-button
+                    label="Calcular Agora"
+                    variant="brand"
+                    icon-name="utility:refresh"
+                    onclick={handleRecalculate}
+                    disabled={isRecalculating}>
+                </lightning-button>
+            </div>
+        </template>
+
+        <template lwc:else>
+            <div class="slds-var-p-around_medium">
+                <div class="slds-grid slds-grid_align-center slds-var-m-bottom_medium">
+                    <div class={healthCircleClass}>
+                        <span class="health-score-value">{health.Health_Score__c}</span>
+                        <span class="health-score-sub">/ 100</span>
+                    </div>
+                </div>
+
+                <div class="slds-grid slds-grid_align-center slds-var-m-bottom_medium">
+                    <span class={statusBadgeClass}>{health.Health_Status__c}</span>
+                </div>
+
+                <div class="kpi-grid slds-var-m-bottom_medium">
+                    <div class="kpi-item">
+                        <p class="kpi-label">Casos Abertos</p>
+                        <p class="kpi-value">{health.Open_Cases__c}</p>
+                    </div>
+                    <div class="kpi-item">
+                        <p class="kpi-label">NPS</p>
+                        <p class="kpi-value">{npsDisplay}</p>
+                    </div>
+                    <div class="kpi-item">
+                        <p class="kpi-label">Dias sem Compra</p>
+                        <p class="kpi-value">{health.Last_Purchase_Days__c}</p>
+                    </div>
+                    <div class="kpi-item">
+                        <p class="kpi-label">Atrasos Pgto</p>
+                        <p class="kpi-value">{health.Payment_Delays__c}</p>
+                    </div>
+                </div>
+
+                <template lwc:if={hasAiAnalysis}>
+                    <lightning-accordion allow-multiple-sections-open>
+                        <lightning-accordion-section name="ai" label="Análise IA">
+                            <p class="slds-text-body_small ai-text">{health.AI_Health_Analysis__c}</p>
+                        </lightning-accordion-section>
+                    </lightning-accordion>
+                </template>
+
+                <div class="slds-grid slds-grid_align-spread slds-var-m-top_medium slds-grid_vertical-align-center">
+                    <p class="slds-text-body_small slds-text-color_weak last-calc-text">
+                        Calculado: {lastCalculatedFormatted}
+                    </p>
+                    <lightning-button
+                        label="Recalcular"
+                        variant="neutral"
+                        icon-name="utility:refresh"
+                        onclick={handleRecalculate}
+                        disabled={isRecalculating}>
+                    </lightning-button>
+                </div>
+            </div>
+        </template>
+    </lightning-card>
+</template>

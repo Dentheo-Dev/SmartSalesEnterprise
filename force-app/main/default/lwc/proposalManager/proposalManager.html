@@ -1,0 +1,38 @@
+<template>
+    <lightning-card title="Propostas" icon-name="standard:opportunity">
+        <div slot="actions">
+            <lightning-button
+                label="Nova Proposta"
+                variant="brand"
+                icon-name="utility:add"
+                onclick={handleCreateProposal}
+                disabled={isCreating}>
+            </lightning-button>
+        </div>
+
+        <template lwc:if={isLoading}>
+            <div class="slds-var-p-around_medium slds-align_absolute-center">
+                <lightning-spinner alternative-text="Carregando..." size="small"></lightning-spinner>
+            </div>
+        </template>
+
+        <template lwc:else>
+            <template lwc:if={hasProposals}>
+                <lightning-datatable
+                    key-field="Id"
+                    data={proposals}
+                    columns={columns}
+                    row-actions={rowActions}
+                    onrowaction={handleRowAction}
+                    hide-checkbox-column>
+                </lightning-datatable>
+            </template>
+
+            <template lwc:else>
+                <div class="slds-var-p-around_medium slds-text-align_center">
+                    <p class="slds-text-color_weak">Nenhuma proposta encontrada para esta oportunidade.</p>
+                </div>
+            </template>
+        </template>
+    </lightning-card>
+</template>

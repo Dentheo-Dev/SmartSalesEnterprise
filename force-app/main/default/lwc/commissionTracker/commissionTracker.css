@@ -1,0 +1,39 @@
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+}
+
+.summary-tile {
+    padding: 0.75rem;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    text-align: center;
+    background-color: #f3f2f2;
+    border-top: 3px solid #e5e5e5;
+}
+
+.tile-pago     { border-top-color: #2e844a; }
+.tile-pendente { border-top-color: #dd7a01; }
+.tile-calculada { border-top-color: #0176d3; }
+
+.tile-label {
+    font-size: 0.68rem;
+    color: #706e6b;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.tile-value {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0.2rem 0 0;
+    color: #181818;
+}
+
+@media (max-width: 600px) {
+    .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

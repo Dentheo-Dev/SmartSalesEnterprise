@@ -1,0 +1,75 @@
+<template>
+    <lightning-card title="Minhas Comissões" icon-name="standard:revenue">
+        <template lwc:if={isSummaryLoading}>
+            <div class="slds-var-p-around_medium slds-align_absolute-center">
+                <lightning-spinner alternative-text="Carregando..." size="small"></lightning-spinner>
+            </div>
+        </template>
+
+        <template lwc:else>
+            <div class="slds-var-p-around_medium">
+                <div class="summary-grid slds-var-m-bottom_medium">
+                    <div class="summary-tile">
+                        <p class="tile-label">Total Geral</p>
+                        <p class="tile-value">{totalGeralFormatted}</p>
+                    </div>
+                    <div class="summary-tile tile-pago">
+                        <p class="tile-label">Pago</p>
+                        <p class="tile-value">{totalPagoFormatted}</p>
+                    </div>
+                    <div class="summary-tile tile-pendente">
+                        <p class="tile-label">Pendente</p>
+                        <p class="tile-value">{totalPendenteFormatted}</p>
+                    </div>
+                    <div class="summary-tile tile-calculada">
+                        <p class="tile-label">Calculada</p>
+                        <p class="tile-value">{totalCalculadaFormatted}</p>
+                    </div>
+                </div>
+
+                <div class="slds-grid slds-gutters_small slds-var-m-bottom_small">
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-combobox
+                            label="Status"
+                            placeholder="Todos"
+                            options={statusOptions}
+                            value={selectedStatus}
+                            onchange={handleStatusChange}>
+                        </lightning-combobox>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-combobox
+                            label="Período"
+                            placeholder="Todos"
+                            options={periodOptions}
+                            value={selectedPeriod}
+                            onchange={handlePeriodChange}>
+                        </lightning-combobox>
+                    </div>
+                </div>
+
+                <template lwc:if={isListLoading}>
+                    <div class="slds-align_absolute-center slds-var-m-vertical_medium">
+                        <lightning-spinner alternative-text="Carregando..." size="small"></lightning-spinner>
+                    </div>
+                </template>
+
+                <template lwc:else>
+                    <template lwc:if={hasCommissions}>
+                        <lightning-datatable
+                            key-field="Id"
+                            data={commissions}
+                            columns={columns}
+                            hide-checkbox-column>
+                        </lightning-datatable>
+                    </template>
+                    <template lwc:else>
+                        <p class="slds-text-color_weak slds-var-m-top_small">
+                            Nenhuma comissão encontrada para os filtros selecionados.
+                        </p>
+                    </template>
+                </template>
+            </div>
+        </template>
+    </lightning-card>
+</template>

@@ -1,0 +1,51 @@
+<template>
+    <lightning-card title="Score do Lead" icon-name="standard:lead">
+        <template lwc:if={isLoading}>
+            <div class="slds-var-p-around_medium slds-align_absolute-center">
+                <lightning-spinner alternative-text="Carregando..." size="small"></lightning-spinner>
+            </div>
+        </template>
+
+        <template lwc:elseif={hasError}>
+            <div class="slds-var-p-around_medium">
+                <p class="slds-text-color_error">{errorMessage}</p>
+            </div>
+        </template>
+
+        <template lwc:else>
+            <div class="slds-var-p-around_medium">
+                <div class="slds-grid slds-grid_align-center slds-var-m-bottom_medium">
+                    <div class={scoreCircleClass}>
+                        <span class="score-value">{scoreDisplay}</span>
+                    </div>
+                </div>
+
+                <div class="slds-grid slds-grid_align-center slds-var-m-bottom_small">
+                    <span class={scoreBadgeClass}>{scoreLabel}</span>
+                </div>
+
+                <template lwc:if={hasScoreReason}>
+                    <p class="slds-text-body_small slds-text-color_weak slds-var-m-bottom_medium reason-text">
+                        {lead.Score_Reason__c}
+                    </p>
+                </template>
+
+                <div class="slds-grid slds-grid_align-center">
+                    <lightning-button
+                        label="Pontuar Agora"
+                        variant="brand"
+                        icon-name="utility:refresh"
+                        onclick={handleScore}
+                        disabled={isSaving}>
+                    </lightning-button>
+                </div>
+
+                <template lwc:if={isSaving}>
+                    <div class="slds-grid slds-grid_align-center slds-var-m-top_small">
+                        <lightning-spinner alternative-text="Calculando..." size="small"></lightning-spinner>
+                    </div>
+                </template>
+            </div>
+        </template>
+    </lightning-card>
+</template>

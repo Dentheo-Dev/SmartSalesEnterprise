@@ -1,0 +1,39 @@
+.score-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.score-hot  { background-color: #2e844a; }
+.score-warm { background-color: #dd7a01; }
+.score-cold { background-color: #ba0517; }
+
+.score-value {
+    color: white;
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.score-badge {
+    display: inline-block;
+    padding: 0.2rem 0.9rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: white;
+    letter-spacing: 0.03em;
+}
+
+.badge-hot  { background-color: #2e844a; }
+.badge-warm { background-color: #dd7a01; }
+.badge-cold { background-color: #ba0517; }
+
+.reason-text {
+    font-size: 0.72rem;
+    line-height: 1.5;
+    word-break: break-word;
+    text-align: center;
+}

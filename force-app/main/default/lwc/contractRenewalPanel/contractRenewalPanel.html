@@ -1,0 +1,49 @@
+<template>
+    <lightning-card title="Renovações de Contrato" icon-name="standard:contract">
+        <div slot="actions">
+            <lightning-combobox
+                label=""
+                variant="label-hidden"
+                options={daysOptions}
+                value={daysThreshold}
+                onchange={handleDaysChange}>
+            </lightning-combobox>
+        </div>
+
+        <template lwc:if={isLoading}>
+            <div class="slds-var-p-around_medium slds-align_absolute-center">
+                <lightning-spinner alternative-text="Carregando..." size="small"></lightning-spinner>
+            </div>
+        </template>
+
+        <template lwc:else>
+            <template lwc:if={hasContracts}>
+                <div class="slds-var-p-around_medium contract-list">
+                    <template for:each={contracts} for:item="c">
+                        <div key={c.Id} class="contract-row">
+                            <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                                <div>
+                                    <p class="contract-account">{c.accountName}</p>
+                                    <p class="contract-name slds-text-color_weak">{c.Name}</p>
+                                    <p class="contract-status slds-text-color_weak">{c.Status__c}</p>
+                                </div>
+                                <div class="slds-text-align_right">
+                                    <span class={c.urgencyClass}>{c.daysLabel}</span>
+                                    <p class="contract-value">{c.valueFormatted}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <template lwc:else>
+                <div class="slds-var-p-around_medium slds-text-align_center">
+                    <p class="slds-text-color_weak">
+                        Nenhum contrato a vencer nos próximos {daysThreshold} dias.
+                    </p>
+                </div>
+            </template>
+        </template>
+    </lightning-card>
+</template>
