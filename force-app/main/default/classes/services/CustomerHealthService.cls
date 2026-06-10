@@ -12,42 +12,19 @@ public with sharing class CustomerHealthService {
 
         Set<Id> accountIdSet = new Set<Id>(accountIds);
 
-        // Health record mais recente por account
-        Map<Id, Customer_Health__c> healthByAccount = new Map<Id, Customer_Health__c>();
-        for (Customer_Health__c ch : [
-            SELECT Id, Account__c, Open_Cases__c, NPS_Score__c,
-                   Payment_Delays__c, Last_Purchase_Days__c
-            FROM Customer_Health__c
-            WHERE Account__c IN :accountIdSet
-            ORDER BY CreatedDate DESC
-        ]) {
-            if (!healthByAccount.containsKey(ch.Account__c)) {
-                healthByAccount.put(ch.Account__c, ch);
-            }
-        }
+        Map<Id, Customer_Health__c> healthByAccount =
+            CustomerHealthSelector.getInstance().selectLatestByAccountIds(accountIdSet);
 
-        // Contagem de cases abertos por account
         Map<Id, Integer> openCasesByAccount = new Map<Id, Integer>();
-        for (AggregateResult ar : [
-            SELECT AccountId, COUNT(Id) total
-            FROM Case
-            WHERE AccountId IN :accountIdSet AND IsClosed = false
-            GROUP BY AccountId
-        ]) {
+        for (AggregateResult ar : CaseSelector.getInstance().selectOpenCasesCountByAccountIds(accountIdSet)) {
             openCasesByAccount.put(
                 (Id) ar.get('AccountId'),
                 Integer.valueOf(ar.get('total'))
             );
         }
 
-        // Data do Closed Won mais recente por account
         Map<Id, Date> lastPurchaseByAccount = new Map<Id, Date>();
-        for (Opportunity opp : [
-            SELECT AccountId, CloseDate
-            FROM Opportunity
-            WHERE AccountId IN :accountIdSet AND StageName = 'Closed Won'
-            ORDER BY CloseDate DESC
-        ]) {
+        for (Opportunity opp : OpportunitySelector.getInstance().selectClosedWonByAccountIds(accountIdSet)) {
             if (!lastPurchaseByAccount.containsKey(opp.AccountId)) {
                 lastPurchaseByAccount.put(opp.AccountId, opp.CloseDate);
             }

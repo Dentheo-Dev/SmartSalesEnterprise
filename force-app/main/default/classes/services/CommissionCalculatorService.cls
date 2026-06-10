@@ -11,15 +11,7 @@ public with sharing class CommissionCalculatorService {
 
         Set<Id> oppIds = new Map<Id, Opportunity>(opps).keySet();
 
-        // Busca comissões existentes para evitar duplicidade
-        Map<Id, Commission__c> existingByOpp = new Map<Id, Commission__c>();
-        for (Commission__c c : [
-            SELECT Id, Opportunity__c
-            FROM Commission__c
-            WHERE Opportunity__c IN :oppIds
-        ]) {
-            existingByOpp.put(c.Opportunity__c, c);
-        }
+        Map<Id, Commission__c> existingByOpp = CommissionSelector.getInstance().selectByOpportunityIds(oppIds);
 
         List<Commission__c> toUpsert   = new List<Commission__c>();
         List<Opportunity>   oppsToFlag = new List<Opportunity>();

@@ -6,12 +6,10 @@ public with sharing class ProposalService {
      * @return ID da proposta criada
      */
     public static Id createProposal(Id opportunityId) {
-        Opportunity opp = [
-            SELECT Id, AccountId, Amount, CloseDate
-            FROM Opportunity
-            WHERE Id = :opportunityId
-            LIMIT 1
-        ];
+        Opportunity opp = OpportunitySelector.getInstance().selectSingleById(opportunityId);
+        if (opp == null) {
+            throw new ProposalException('Opportunity não encontrada: ' + opportunityId);
+        }
 
         String proposalNumber = 'PROP-' + String.valueOf(Datetime.now().getTime()).right(6);
 
@@ -34,15 +32,7 @@ public with sharing class ProposalService {
      * @param proposalId ID da proposta a enviar
      */
     public static void sendProposal(Id proposalId) {
-        Product_Proposal__c proposal = [
-            SELECT Id, Status__c, Sent_Date__c, Discount_Percentage__c,
-                   Total_Value__c, Final_Value__c,
-                   Account__r.Name,
-                   Opportunity__r.Owner.Email, Opportunity__r.Owner.Name
-            FROM Product_Proposal__c
-            WHERE Id = :proposalId
-            LIMIT 1
-        ];
+        Product_Proposal__c proposal = ProductProposalSelector.getInstance().selectById(proposalId);
 
         validateDiscount(proposal);
 
@@ -58,11 +48,7 @@ public with sharing class ProposalService {
      * Chamado pelo ProposalExpirationBatch (Passo 8).
      */
     public static void expireProposals() {
-        List<Product_Proposal__c> expired = [
-            SELECT Id, Status__c
-            FROM Product_Proposal__c
-            WHERE Status__c = 'Enviada' AND Valid_Until__c < TODAY
-        ];
+        List<Product_Proposal__c> expired = ProductProposalSelector.getInstance().selectExpiredSent();
 
         for (Product_Proposal__c p : expired) {
             p.Status__c = 'Expirada';
