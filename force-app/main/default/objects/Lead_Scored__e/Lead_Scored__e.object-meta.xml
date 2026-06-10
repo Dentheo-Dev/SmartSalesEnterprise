@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Publicado quando um Lead recebe pontuação de qualificação. Dispara follow-up automático para leads com score alto.</description>
+    <eventType>HighVolume</eventType>
+    <label>Lead Scored</label>
+    <pluralLabel>Lead Scored Events</pluralLabel>
+    <publishBehavior>PublishAfterCommit</publishBehavior>
+</CustomObject>

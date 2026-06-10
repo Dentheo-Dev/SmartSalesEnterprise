@@ -75,7 +75,44 @@ public with sharing class CustomerHealthService {
 
         if (!toUpsert.isEmpty()) {
             upsert toUpsert;
+            publishHealthAlerts(toUpsert, healthByAccount);
         }
+    }
+
+    private static void publishHealthAlerts(
+        List<Customer_Health__c> upserted,
+        Map<Id, Customer_Health__c> previousHealthByAccount
+    ) {
+        Set<String> alertStatuses = new Set<String>{ 'Crítico', 'Em Risco' };
+        List<SObject> events = new List<SObject>();
+
+        Set<Id> accountIds = new Set<Id>();
+        for (Customer_Health__c ch : upserted) {
+            accountIds.add(ch.Account__c);
+        }
+        Map<Id, Account> accountsById = new Map<Id, Account>(
+            [SELECT Id, Name FROM Account WHERE Id IN :accountIds]
+        );
+
+        for (Customer_Health__c ch : upserted) {
+            if (!alertStatuses.contains(ch.Health_Status__c)) continue;
+
+            Customer_Health__c prev = previousHealthByAccount.get(ch.Account__c);
+            String previousStatus  = prev != null ? prev.Health_Status__c : 'Saudável';
+
+            Account acc = accountsById.get(ch.Account__c);
+            String accountName = acc != null ? acc.Name : String.valueOf(ch.Account__c);
+
+            events.add(new Customer_Health_Alert__e(
+                Account_Id__c      = String.valueOf(ch.Account__c),
+                Account_Name__c    = accountName,
+                Health_Score__c    = ch.Health_Score__c,
+                Health_Status__c   = ch.Health_Status__c,
+                Previous_Status__c = previousStatus
+            ));
+        }
+
+        PlatformEventService.publishAll(events);
     }
 
     private static String getHealthStatus(Integer score) {

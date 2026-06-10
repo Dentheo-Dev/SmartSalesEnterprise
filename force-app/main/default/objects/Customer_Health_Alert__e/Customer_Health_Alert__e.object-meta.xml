@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Publicado quando o Customer Health Score cai para Crítico ou Em Risco. Dispara alertas de retenção para equipe de CS.</description>
+    <eventType>HighVolume</eventType>
+    <label>Customer Health Alert</label>
+    <pluralLabel>Customer Health Alert Events</pluralLabel>
+    <publishBehavior>PublishAfterCommit</publishBehavior>
+</CustomObject>

@@ -88,6 +88,32 @@ public with sharing class LeadScoringService {
 
         if (!toUpdate.isEmpty()) {
             update toUpdate;
+            publishScoredEvents(leads, toUpdate);
         }
+    }
+
+    private static void publishScoredEvents(
+        List<Lead> originalLeads, List<Lead> updatedLeads
+    ) {
+        Map<Id, Lead> updatedById = new Map<Id, Lead>();
+        for (Lead l : updatedLeads) {
+            updatedById.put(l.Id, l);
+        }
+
+        List<SObject> events = new List<SObject>();
+        for (Lead original : originalLeads) {
+            Lead updated = updatedById.get(original.Id);
+            if (updated == null) continue;
+
+            Decimal previousScore = original.Lead_Score__c != null ? original.Lead_Score__c : 0;
+            events.add(new Lead_Scored__e(
+                Lead_Id__c        = String.valueOf(original.Id),
+                Score__c          = updated.Lead_Score__c,
+                Previous_Score__c = previousScore,
+                Score_Reason__c   = updated.Score_Reason__c
+            ));
+        }
+
+        PlatformEventService.publishAll(events);
     }
 }

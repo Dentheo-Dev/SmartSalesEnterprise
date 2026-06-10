@@ -27,12 +27,21 @@ public class OpportunityTriggerHandler extends TriggerHandler {
     override protected void afterUpdate() {
         List<Opportunity> closedWon     = new List<Opportunity>();
         List<Opportunity> amountChanged = new List<Opportunity>();
+        List<SObject>     stageEvents   = new List<SObject>();
 
         for (Opportunity opp : newList) {
             Opportunity old = oldMap.get(opp.Id);
 
-            if (opp.StageName == 'Closed Won' && old.StageName != 'Closed Won') {
-                closedWon.add(opp);
+            if (opp.StageName != old.StageName) {
+                if (opp.StageName == 'Closed Won') {
+                    closedWon.add(opp);
+                }
+                stageEvents.add(new Opportunity_Stage_Changed__e(
+                    Opportunity_Id__c = String.valueOf(opp.Id),
+                    Previous_Stage__c = old.StageName,
+                    New_Stage__c      = opp.StageName,
+                    Amount__c         = opp.Amount
+                ));
             }
             if (opp.Amount != old.Amount) {
                 amountChanged.add(opp);
@@ -47,6 +56,9 @@ public class OpportunityTriggerHandler extends TriggerHandler {
         }
         if (!amountChanged.isEmpty()) {
             CommissionCalculatorService.calculateCommission(amountChanged);
+        }
+        if (!stageEvents.isEmpty()) {
+            PlatformEventService.publishAll(stageEvents);
         }
     }
 

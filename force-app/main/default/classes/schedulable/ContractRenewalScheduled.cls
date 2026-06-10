@@ -16,7 +16,27 @@ public with sharing class ContractRenewalScheduled implements Schedulable {
 
         if (!expiringSoon.isEmpty()) {
             sendAlerts(expiringSoon);
+            publishRenewalEvents(expiringSoon);
         }
+    }
+
+    private static void publishRenewalEvents(List<Contract_Renewal__c> renewals) {
+        List<SObject> events = new List<SObject>();
+
+        for (Contract_Renewal__c cr : renewals) {
+            Integer daysLeft   = Date.today().daysBetween(cr.Original_Contract_End__c);
+            String accountName = cr.Account__r != null ? cr.Account__r.Name : cr.Name;
+
+            events.add(new Contract_Renewal_Alert__e(
+                Contract_Renewal_Id__c   = String.valueOf(cr.Id),
+                Account_Id__c            = String.valueOf(cr.Account__c),
+                Account_Name__c          = accountName,
+                Days_Until_Expiration__c = daysLeft,
+                Renewal_Value__c         = cr.Renewal_Value__c
+            ));
+        }
+
+        PlatformEventService.publishAll(events);
     }
 
     private void sendAlerts(List<Contract_Renewal__c> renewals) {
