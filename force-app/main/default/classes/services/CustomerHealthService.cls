@@ -1,6 +1,110 @@
 public with sharing class CustomerHealthService {
 
+    /**
+     * Calcula e persiste Customer_Health__c para as accounts informadas.
+     * Score base 70. Regras: +20 NPS>8, -20 NPS<5, -30 cases>5,
+     * -25 sem compra há >365 dias, -20 atrasos de pagamento>2.
+     */
     public static void calculateHealth(List<Id> accountIds) {
-        // Implementação completa no Passo 4 — Service Layer
+        if (accountIds == null || accountIds.isEmpty()) {
+            return;
+        }
+
+        Set<Id> accountIdSet = new Set<Id>(accountIds);
+
+        // Health record mais recente por account
+        Map<Id, Customer_Health__c> healthByAccount = new Map<Id, Customer_Health__c>();
+        for (Customer_Health__c ch : [
+            SELECT Id, Account__c, Open_Cases__c, NPS_Score__c,
+                   Payment_Delays__c, Last_Purchase_Days__c
+            FROM Customer_Health__c
+            WHERE Account__c IN :accountIdSet
+            ORDER BY CreatedDate DESC
+        ]) {
+            if (!healthByAccount.containsKey(ch.Account__c)) {
+                healthByAccount.put(ch.Account__c, ch);
+            }
+        }
+
+        // Contagem de cases abertos por account
+        Map<Id, Integer> openCasesByAccount = new Map<Id, Integer>();
+        for (AggregateResult ar : [
+            SELECT AccountId, COUNT(Id) total
+            FROM Case
+            WHERE AccountId IN :accountIdSet AND IsClosed = false
+            GROUP BY AccountId
+        ]) {
+            openCasesByAccount.put(
+                (Id) ar.get('AccountId'),
+                Integer.valueOf(ar.get('total'))
+            );
+        }
+
+        // Data do Closed Won mais recente por account
+        Map<Id, Date> lastPurchaseByAccount = new Map<Id, Date>();
+        for (Opportunity opp : [
+            SELECT AccountId, CloseDate
+            FROM Opportunity
+            WHERE AccountId IN :accountIdSet AND StageName = 'Closed Won'
+            ORDER BY CloseDate DESC
+        ]) {
+            if (!lastPurchaseByAccount.containsKey(opp.AccountId)) {
+                lastPurchaseByAccount.put(opp.AccountId, opp.CloseDate);
+            }
+        }
+
+        List<Customer_Health__c> toUpsert = new List<Customer_Health__c>();
+
+        for (Id accId : accountIdSet) {
+            Integer score        = 70;
+            Integer openCases    = openCasesByAccount.containsKey(accId)
+                ? openCasesByAccount.get(accId) : 0;
+            Integer paymentDelays  = 0;
+            Decimal npsScore       = null;
+            Integer lastPurchaseDays = 365 * 10; // padrão: sem compra recente
+
+            if (healthByAccount.containsKey(accId)) {
+                Customer_Health__c existing = healthByAccount.get(accId);
+                paymentDelays = existing.Payment_Delays__c != null
+                    ? Integer.valueOf(existing.Payment_Delays__c) : 0;
+                npsScore = existing.NPS_Score__c;
+            }
+
+            if (lastPurchaseByAccount.containsKey(accId)) {
+                lastPurchaseDays = lastPurchaseByAccount.get(accId).daysBetween(Date.today());
+            }
+
+            // Aplicação das regras de pontuação
+            if (openCases > 5)                         score -= 30;
+            if (lastPurchaseDays > 365)                score -= 25;
+            if (paymentDelays > 2)                     score -= 20;
+            if (npsScore != null && npsScore > 8)      score += 20;
+            if (npsScore != null && npsScore < 5)      score -= 20;
+
+            score = Math.max(0, Math.min(100, score));
+
+            Customer_Health__c ch = healthByAccount.containsKey(accId)
+                ? healthByAccount.get(accId)
+                : new Customer_Health__c(Account__c = accId, Name = 'Health Score');
+
+            ch.Health_Score__c       = score;
+            ch.Health_Status__c      = getHealthStatus(score);
+            ch.Open_Cases__c         = openCases;
+            ch.Last_Purchase_Days__c = lastPurchaseDays;
+            ch.Last_Calculated__c    = Datetime.now();
+
+            toUpsert.add(ch);
+        }
+
+        if (!toUpsert.isEmpty()) {
+            upsert toUpsert;
+        }
+    }
+
+    private static String getHealthStatus(Integer score) {
+        if (score <= 30)       return 'Crítico';
+        else if (score <= 60)  return 'Em Risco';
+        else if (score <= 80)  return 'Saudável';
+        else                   return 'Excelente';
     }
 }
