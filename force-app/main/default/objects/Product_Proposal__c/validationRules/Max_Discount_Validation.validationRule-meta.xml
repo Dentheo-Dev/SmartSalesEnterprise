@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Max_Discount_Validation</fullName>
+    <active>true</active>
+    <description>Desconto acima de 50% exige aprovação — bloqueia status diferente de Rascunho se desconto ultrapassar o limite.</description>
+    <errorConditionFormula>Discount_Percentage__c > 50 &amp;&amp; NOT(ISPICKVAL(Status__c, 'Rascunho'))</errorConditionFormula>
+    <errorMessage>Desconto acima de 50% requer aprovação gerencial. Mantenha o status como Rascunho até obter aprovação.</errorMessage>
+</ValidationRule>
