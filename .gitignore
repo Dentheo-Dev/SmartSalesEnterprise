@@ -1,0 +1,31 @@
+# Salesforce CLI
+.sfdx/
+.sf/
+
+# VS Code
+.vscode/settings.json
+.vscode/launch.json
+
+# Node
+node_modules/
+.npm/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Deploy results
+*-meta.xml.bak
+deploy-result.json
+
+# Environment / secrets
+.env
+.env.local
+auth.json
+
+# Logs
+*.log
+
+# Test results
+test-results/
+coverage/
