@@ -1,1 +1,11 @@
-'{"packageDirectories":[{"path":"force-app","default":true}],"name":"SmartSalesEnterprise","namespace":"","sourceApiVersion":"61.0"}' 
+{
+  "packageDirectories": [
+    {
+      "path": "force-app",
+      "default": true
+    }
+  ],
+  "name": "SmartSalesEnterprise",
+  "namespace": "",
+  "sourceApiVersion": "61.0"
+}
