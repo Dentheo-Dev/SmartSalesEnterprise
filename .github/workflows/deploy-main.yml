@@ -1,0 +1,91 @@
+name: Deploy to Salesforce Org
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'force-app/**'
+      - 'sfdx-project.json'
+
+jobs:
+  deploy:
+    name: Deploy Delta + Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Salesforce CLI
+        run: npm install -g @salesforce/cli
+
+      - name: Install sfdx-git-delta (delta deployment)
+        run: npm install -g sfdx-git-delta
+
+      - name: Write JWT Private Key
+        run: echo "${{ secrets.SF_JWT_PRIVATE_KEY }}" > server.key
+
+      - name: Authenticate to Salesforce Org
+        run: |
+          sf org login jwt \
+            --client-id "${{ secrets.SF_CONSUMER_KEY }}" \
+            --jwt-key-file server.key \
+            --username "${{ secrets.SF_USERNAME }}" \
+            --instance-url "${{ secrets.SF_ORG_URL }}" \
+            --alias target-org \
+            --set-default
+
+      - name: Calculate delta (only changed metadata since last deploy)
+        run: |
+          mkdir -p deploy-delta
+          sgd \
+            --to HEAD \
+            --from HEAD~1 \
+            --source force-app \
+            --output deploy-delta \
+            --generate-delta \
+            --ignore .sgdignore || true
+
+      - name: Check if delta has changes
+        id: check_delta
+        run: |
+          if [ -d "deploy-delta/force-app" ] && [ "$(ls -A deploy-delta/force-app)" ]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "Nenhuma alteracao de metadata detectada no delta."
+          fi
+
+      - name: Deploy delta metadata
+        if: steps.check_delta.outputs.has_changes == 'true'
+        run: |
+          sf project deploy start \
+            --source-dir deploy-delta/force-app \
+            --target-org target-org \
+            --test-level RunLocalTests \
+            --wait 30
+
+      - name: Full deploy fallback (if delta empty)
+        if: steps.check_delta.outputs.has_changes == 'false'
+        run: |
+          echo "Delta vazio - executando deploy completo como fallback"
+          sf project deploy start \
+            --source-dir force-app \
+            --target-org target-org \
+            --test-level RunLocalTests \
+            --wait 30
+
+      - name: Cleanup JWT key
+        if: always()
+        run: rm -f server.key
+
+      - name: Logout from org
+        if: always()
+        run: sf org logout --target-org target-org --no-prompt || true

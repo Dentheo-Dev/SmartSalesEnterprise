@@ -1,0 +1,68 @@
+name: Validate Pull Request
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'force-app/**'
+      - 'sfdx-project.json'
+
+jobs:
+  validate:
+    name: Validate Metadata + Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Salesforce CLI
+        run: npm install -g @salesforce/cli
+
+      - name: Verify SF CLI version
+        run: sf version
+
+      - name: Write JWT Private Key
+        run: echo "${{ secrets.SF_JWT_PRIVATE_KEY }}" > server.key
+
+      - name: Authenticate to Salesforce Org
+        run: |
+          sf org login jwt \
+            --client-id "${{ secrets.SF_CONSUMER_KEY }}" \
+            --jwt-key-file server.key \
+            --username "${{ secrets.SF_USERNAME }}" \
+            --instance-url "${{ secrets.SF_ORG_URL }}" \
+            --alias validation-org \
+            --set-default
+
+      - name: Validate Deployment (check-only + RunLocalTests)
+        run: |
+          sf project deploy validate \
+            --source-dir force-app \
+            --target-org validation-org \
+            --test-level RunLocalTests \
+            --coverage-formatters clover \
+            --results-dir coverage \
+            --wait 30
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: apex-coverage-report
+          path: coverage/
+
+      - name: Cleanup JWT key
+        if: always()
+        run: rm -f server.key
+
+      - name: Logout from org
+        if: always()
+        run: sf org logout --target-org validation-org --no-prompt || true
