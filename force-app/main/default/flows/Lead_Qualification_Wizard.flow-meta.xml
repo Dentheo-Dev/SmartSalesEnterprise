@@ -263,47 +263,30 @@ IF({!TimelineDefined}, 1, 0)</expression>
             <name>BudgetConfirmed</name>
             <fieldType>InputField</fieldType>
             <dataType>Boolean</dataType>
-            <defaultValue>
-                <booleanValue>false</booleanValue>
-            </defaultValue>
-            <isRequired>false</isRequired>
             <label>Orcamento confirmado?</label>
         </fields>
         <fields>
             <name>AuthorityConfirmed</name>
             <fieldType>InputField</fieldType>
             <dataType>Boolean</dataType>
-            <defaultValue>
-                <booleanValue>false</booleanValue>
-            </defaultValue>
-            <isRequired>false</isRequired>
             <label>Fala diretamente com o decisor?</label>
         </fields>
         <fields>
             <name>NeedIdentified</name>
             <fieldType>InputField</fieldType>
             <dataType>Boolean</dataType>
-            <defaultValue>
-                <booleanValue>false</booleanValue>
-            </defaultValue>
-            <isRequired>false</isRequired>
             <label>Necessidade claramente identificada?</label>
         </fields>
         <fields>
             <name>TimelineDefined</name>
             <fieldType>InputField</fieldType>
             <dataType>Boolean</dataType>
-            <defaultValue>
-                <booleanValue>false</booleanValue>
-            </defaultValue>
-            <isRequired>false</isRequired>
             <label>Prazo de decisao definido?</label>
         </fields>
         <fields>
             <name>QualificationNotes</name>
             <fieldType>LargeTextArea</fieldType>
             <dataType>String</dataType>
-            <isRequired>false</isRequired>
             <label>Notas de qualificacao</label>
         </fields>
         <showFooter>true</showFooter>
