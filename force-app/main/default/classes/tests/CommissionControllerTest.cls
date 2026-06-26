@@ -14,19 +14,7 @@ private class CommissionControllerTest {
             CloseDate = Date.today()
         );
         insert opp;
-
-        String period = String.valueOf(Date.today().year()) + '-'
-                      + String.valueOf(Date.today().month()).leftPad(2, '0');
-
-        insert new Commission__c(
-            Name                 = 'Comissão Controller Test',
-            Opportunity__c       = opp.Id,
-            Sales_Rep__c         = UserInfo.getUserId(),
-            Commission_Rate__c   = 7,
-            Commission_Amount__c = 7000,
-            Status__c            = 'Calculada',
-            Period__c            = period
-        );
+        // O trigger afterInsert cria a Commission automaticamente via CommissionCalculatorService
     }
 
     @IsTest

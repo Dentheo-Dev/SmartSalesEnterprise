@@ -73,11 +73,11 @@ private class ProposalControllerTest {
         Product_Proposal__c prop = [SELECT Id FROM Product_Proposal__c LIMIT 1];
 
         Test.startTest();
-        ProposalController.updateStatus(prop.Id, 'Aceita');
+        ProposalController.updateStatus(prop.Id, 'Aprovada');
         Test.stopTest();
 
         Product_Proposal__c updated = [SELECT Status__c FROM Product_Proposal__c WHERE Id = :prop.Id];
-        System.assertEquals('Aceita', updated.Status__c, 'Status deve ser atualizado para Aceita');
+        System.assertEquals('Aprovada', updated.Status__c, 'Status deve ser atualizado para Aprovada');
     }
 
     @IsTest

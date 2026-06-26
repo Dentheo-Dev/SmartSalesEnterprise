@@ -27,8 +27,8 @@ public with sharing class CustomerHealthSelector extends ApplicationSelector {
         assertIsAccessible();
         Map<Id, Customer_Health__c> result = new Map<Id, Customer_Health__c>();
         for (Customer_Health__c ch : [
-            SELECT Id, Account__c, Open_Cases__c, NPS_Score__c,
-                   Payment_Delays__c, Last_Purchase_Days__c
+            SELECT Id, Account__c, Health_Score__c, NPS_Score__c,
+                   Open_Cases__c, Payment_Delays__c, Last_Purchase_Days__c
             FROM Customer_Health__c
             WHERE Account__c IN :accountIds
             ORDER BY CreatedDate DESC

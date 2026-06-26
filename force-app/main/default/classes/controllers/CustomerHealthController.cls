@@ -8,7 +8,7 @@ public with sharing class CustomerHealthController {
                    Payment_Delays__c, Last_Calculated__c, AI_Health_Analysis__c
             FROM Customer_Health__c
             WHERE Account__c = :accountId
-            ORDER BY CreatedDate DESC
+            ORDER BY CreatedDate DESC, Id DESC
             LIMIT 1
         ];
         return records.isEmpty() ? null : records[0];

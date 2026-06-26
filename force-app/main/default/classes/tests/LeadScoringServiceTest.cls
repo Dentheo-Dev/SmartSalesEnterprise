@@ -33,7 +33,7 @@ private class LeadScoringServiceTest {
     static void testScoreMaximo() {
         Lead lead = [
             SELECT Id, Email, Phone, Title, LeadSource,
-                   Company_Size__c, Annual_Revenue_Estimate__c
+                   Company_Size__c, Annual_Revenue_Estimate__c, Lead_Score__c
             FROM Lead
             WHERE LastName = 'Silva'
             LIMIT 1
@@ -51,7 +51,11 @@ private class LeadScoringServiceTest {
 
     @IsTest
     static void testScoreZero() {
-        Lead lead = [SELECT Id, Email FROM Lead WHERE LastName = 'Santos' LIMIT 1];
+        Lead lead = [
+            SELECT Id, Email, Phone, Title, LeadSource,
+                   Company_Size__c, Annual_Revenue_Estimate__c, Lead_Score__c
+            FROM Lead WHERE LastName = 'Santos' LIMIT 1
+        ];
 
         Test.startTest();
         LeadScoringService.scoreLeads(new List<Lead>{ lead });
@@ -70,7 +74,11 @@ private class LeadScoringServiceTest {
         );
         insert lead;
 
-        lead = [SELECT Id, Email FROM Lead WHERE Id = :lead.Id];
+        lead = [
+            SELECT Id, Email, Phone, Title, LeadSource,
+                   Company_Size__c, Annual_Revenue_Estimate__c, Lead_Score__c
+            FROM Lead WHERE Id = :lead.Id
+        ];
 
         Test.startTest();
         LeadScoringService.scoreLeads(new List<Lead>{ lead });
@@ -90,7 +98,11 @@ private class LeadScoringServiceTest {
         );
         insert lead;
 
-        lead = [SELECT Id, Email, Title FROM Lead WHERE Id = :lead.Id];
+        lead = [
+            SELECT Id, Email, Phone, Title, LeadSource,
+                   Company_Size__c, Annual_Revenue_Estimate__c, Lead_Score__c
+            FROM Lead WHERE Id = :lead.Id
+        ];
 
         Test.startTest();
         LeadScoringService.scoreLeads(new List<Lead>{ lead });
@@ -110,7 +122,11 @@ private class LeadScoringServiceTest {
         );
         insert lead;
 
-        lead = [SELECT Id, Email, LeadSource FROM Lead WHERE Id = :lead.Id];
+        lead = [
+            SELECT Id, Email, Phone, Title, LeadSource,
+                   Company_Size__c, Annual_Revenue_Estimate__c, Lead_Score__c
+            FROM Lead WHERE Id = :lead.Id
+        ];
 
         Test.startTest();
         LeadScoringService.scoreLeads(new List<Lead>{ lead });
@@ -136,7 +152,7 @@ private class LeadScoringServiceTest {
 
         lead = [
             SELECT Id, Email, Phone, Title, LeadSource,
-                   Company_Size__c, Annual_Revenue_Estimate__c
+                   Company_Size__c, Annual_Revenue_Estimate__c, Lead_Score__c
             FROM Lead WHERE Id = :lead.Id
         ];
 
@@ -162,7 +178,8 @@ private class LeadScoringServiceTest {
         insert leads;
 
         leads = [
-            SELECT Id, Email, LeadSource
+            SELECT Id, Email, Phone, Title, LeadSource,
+                   Company_Size__c, Annual_Revenue_Estimate__c, Lead_Score__c
             FROM Lead WHERE LastName LIKE 'Lead%'
         ];
 

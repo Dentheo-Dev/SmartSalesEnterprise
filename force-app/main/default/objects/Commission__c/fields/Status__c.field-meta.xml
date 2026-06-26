@@ -16,6 +16,11 @@
                 <label>Calculada</label>
             </value>
             <value>
+                <fullName>Pendente</fullName>
+                <default>false</default>
+                <label>Pendente</label>
+            </value>
+            <value>
                 <fullName>Aprovada</fullName>
                 <default>false</default>
                 <label>Aprovada</label>

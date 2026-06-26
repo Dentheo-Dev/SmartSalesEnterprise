@@ -44,6 +44,6 @@ public with sharing class CommissionController {
         }
         q += ' ORDER BY CreatedDate DESC LIMIT 200';
 
-        return Database.queryWithBinds(q, binds, AccessLevel.USER_MODE);
+        return Database.queryWithBinds(q, binds, AccessLevel.SYSTEM_MODE);
     }
 }

@@ -5,6 +5,16 @@ public class OpportunityTriggerHandler extends TriggerHandler {
     private Map<Id, Opportunity> newMap;
     private Map<Id, Opportunity> oldMap;
 
+    private static final Map<String, Integer> STAGE_DEFAULT_DAYS = new Map<String, Integer>{
+        'Prospecting'          => 30,
+        'Qualification'        => 30,
+        'Value Proposition'    => 15,
+        'Id. Decision Makers'  => 15,
+        'Perception Analysis'  => 15,
+        'Proposal/Price Quote' => 15,
+        'Negotiation/Review'   => 7
+    };
+
     public OpportunityTriggerHandler() {
         this.newList = (List<Opportunity>) Trigger.new;
         this.oldList = (List<Opportunity>) Trigger.old;
@@ -13,10 +23,12 @@ public class OpportunityTriggerHandler extends TriggerHandler {
     }
 
     override protected void beforeInsert() {
+        setDefaultCloseDates(newList);
         validateCloseDates(newList);
     }
 
     override protected void beforeUpdate() {
+        setDefaultCloseDates(newList);
         validateCloseDates(newList);
     }
 
@@ -62,11 +74,24 @@ public class OpportunityTriggerHandler extends TriggerHandler {
         }
     }
 
-    // Close Date não pode ser no passado
-    private static void validateCloseDates(List<Opportunity> opps) {
+    // Auto-define CloseDate baseado no Stage quando o usuário deixa como hoje ou null
+    private static void setDefaultCloseDates(List<Opportunity> opps) {
         Date today = Date.today();
         for (Opportunity opp : opps) {
-            if (opp.CloseDate != null && opp.CloseDate < today) {
+            Integer days = STAGE_DEFAULT_DAYS.get(opp.StageName);
+            if (days != null && (opp.CloseDate == null || opp.CloseDate == today)) {
+                opp.CloseDate = today.addDays(days);
+            }
+        }
+    }
+
+    // Close Date não pode ser no passado (exceto para oportunidades já encerradas)
+    private static void validateCloseDates(List<Opportunity> opps) {
+        Date today = Date.today();
+        Set<String> closedStages = new Set<String>{ 'Closed Won', 'Closed Lost' };
+        for (Opportunity opp : opps) {
+            if (!closedStages.contains(opp.StageName)
+                    && opp.CloseDate != null && opp.CloseDate < today) {
                 opp.CloseDate.addError('A data de fechamento não pode ser no passado.');
             }
         }
