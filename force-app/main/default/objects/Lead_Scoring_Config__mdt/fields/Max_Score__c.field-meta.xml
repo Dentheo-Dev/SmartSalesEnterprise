@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Max_Score__c</fullName>
+    <description>Pontuacao maxima possivel para normalizacao do score final</description>
+    <label>Score Maximo</label>
+    <precision>5</precision>
+    <scale>0</scale>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Revenue_Weight__c</fullName>
+    <description>Peso da receita anual estimada no calculo de score (0-100)</description>
+    <label>Peso - Receita Anual</label>
+    <precision>5</precision>
+    <scale>2</scale>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>
