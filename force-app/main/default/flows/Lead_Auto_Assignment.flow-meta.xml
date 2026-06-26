@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>61.0</apiVersion>
+    <description>Define Rating e Status automaticamente baseado na origem do Lead no momento da criacao</description>
+    <environments>Default</environments>
+    <interviewLabel>Lead Auto Assignment {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Lead - Auto Assignment por Origem</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <assignments>
+        <name>Assign_Cold_Rating</name>
+        <label>Rating Cold - Outro</label>
+        <locationX>440</locationX>
+        <locationY>270</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Rating</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Cold</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.Status</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Open - Not Contacted</stringValue>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Assign_Hot_Rating</name>
+        <label>Rating Hot - Web ou Parceiro</label>
+        <locationX>176</locationX>
+        <locationY>270</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Rating</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Hot</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.Status</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Working - Contacted</stringValue>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Assign_Warm_Rating</name>
+        <label>Rating Warm - Ligacao ou Indicacao</label>
+        <locationX>308</locationX>
+        <locationY>270</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Rating</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Warm</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.Status</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Open - Not Contacted</stringValue>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <decisions>
+        <name>Decision_Lead_Source</name>
+        <label>Verificar Origem do Lead</label>
+        <locationX>308</locationX>
+        <locationY>150</locationY>
+        <defaultConnector>
+            <targetReference>Assign_Cold_Rating</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Outro</defaultConnectorLabel>
+        <rules>
+            <name>Web_ou_Parceiro</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.LeadSource</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Web</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.LeadSource</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Partner Referral</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_Hot_Rating</targetReference>
+            </connector>
+            <label>Web ou Parceiro</label>
+        </rules>
+        <rules>
+            <name>Ligacao_ou_Indicacao</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.LeadSource</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Phone Inquiry</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.LeadSource</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Word of mouth</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_Warm_Rating</targetReference>
+            </connector>
+            <label>Ligacao ou Indicacao</label>
+        </rules>
+    </decisions>
+    <start>
+        <locationX>182</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Decision_Lead_Source</targetReference>
+        </connector>
+        <object>Lead</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

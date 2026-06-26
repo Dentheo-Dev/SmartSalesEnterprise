@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>61.0</apiVersion>
+    <description>Executa diariamente e cria tarefas de follow-up para Oportunidades ativas sem atividade ha mais de 7 dias</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>SevenDaysAgo</name>
+        <dataType>Date</dataType>
+        <expression>TODAY() - 7</expression>
+    </formulas>
+    <formulas>
+        <name>Tomorrow</name>
+        <dataType>Date</dataType>
+        <expression>TODAY() + 1</expression>
+    </formulas>
+    <interviewLabel>Opportunity Follow Up Reminder {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Opportunity - Follow-Up Reminder (Scheduled)</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>Create_FollowUp_Task</name>
+        <label>Criar Tarefa de Follow-up</label>
+        <locationX>176</locationX>
+        <locationY>510</locationY>
+        <connector>
+            <targetReference>Loop_Opportunities</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>ActivityDate</field>
+            <value>
+                <elementReference>Tomorrow</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>Loop_Opportunities.OwnerId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Priority</field>
+            <value>
+                <stringValue>Normal</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status</field>
+            <value>
+                <stringValue>Not Started</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Subject</field>
+            <value>
+                <stringValue>Follow-up: Oportunidade sem atividade ha 7 dias</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>WhatId</field>
+            <value>
+                <elementReference>Loop_Opportunities.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Task</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordLookups>
+        <name>Get_Stale_Opportunities</name>
+        <label>Buscar Oportunidades Sem Atividade</label>
+        <locationX>176</locationX>
+        <locationY>150</locationY>
+        <connector>
+            <targetReference>Loop_Opportunities</targetReference>
+        </connector>
+        <filterLogic>1 AND 2 AND 3 AND (4 OR 5)</filterLogic>
+        <filters>
+            <field>StageName</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <stringValue>Closed Won</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>StageName</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <stringValue>Closed Lost</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>CloseDate</field>
+            <operator>GreaterThanOrEqualTo</operator>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>LastActivityDate</field>
+            <operator>LessThan</operator>
+            <value>
+                <elementReference>SevenDaysAgo</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>LastActivityDate</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>Opportunity</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>OwnerId</queriedFields>
+        <queriedFields>Name</queriedFields>
+        <queriedFields>StageName</queriedFields>
+        <queriedFields>CloseDate</queriedFields>
+        <queriedFields>LastActivityDate</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <loops>
+        <name>Loop_Opportunities</name>
+        <label>Iterar Oportunidades</label>
+        <locationX>176</locationX>
+        <locationY>330</locationY>
+        <collectionReference>Get_Stale_Opportunities</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Create_FollowUp_Task</targetReference>
+        </nextValueConnector>
+    </loops>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Stale_Opportunities</targetReference>
+        </connector>
+        <schedule>
+            <frequency>Daily</frequency>
+            <startDate>2026-07-01</startDate>
+            <startTime>08:00:00.000Z</startTime>
+        </schedule>
+        <triggerType>Scheduled</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>
