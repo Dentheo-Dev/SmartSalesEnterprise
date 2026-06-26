@@ -256,54 +256,54 @@ IF({!TimelineDefined}, 1, 0)</expression>
         </connector>
         <fields>
             <name>Header_Info</name>
-            <fieldText>&lt;p&gt;&lt;strong&gt;Qualificacao BANT&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Responda as perguntas abaixo para classificar o Lead automaticamente.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <fieldText>&lt;p&gt;&lt;strong&gt;Qualificacao BANT&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Responda as perguntas abaixo para classificar o Lead automaticamente.&lt;/p&gt;</fieldText>
         </fields>
         <fields>
-            <label>Orcamento confirmado?</label>
             <name>BudgetConfirmed</name>
             <dataType>Boolean</dataType>
+            <fieldType>InputField</fieldType>
+            <label>Orcamento confirmado?</label>
             <defaultValue>
                 <booleanValue>false</booleanValue>
             </defaultValue>
-            <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
         </fields>
         <fields>
-            <label>Fala diretamente com o decisor?</label>
             <name>AuthorityConfirmed</name>
             <dataType>Boolean</dataType>
+            <fieldType>InputField</fieldType>
+            <label>Fala diretamente com o decisor?</label>
             <defaultValue>
                 <booleanValue>false</booleanValue>
             </defaultValue>
-            <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
         </fields>
         <fields>
-            <label>Necessidade claramente identificada?</label>
             <name>NeedIdentified</name>
             <dataType>Boolean</dataType>
+            <fieldType>InputField</fieldType>
+            <label>Necessidade claramente identificada?</label>
             <defaultValue>
                 <booleanValue>false</booleanValue>
             </defaultValue>
-            <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
         </fields>
         <fields>
-            <label>Prazo de decisao definido?</label>
             <name>TimelineDefined</name>
             <dataType>Boolean</dataType>
+            <fieldType>InputField</fieldType>
+            <label>Prazo de decisao definido?</label>
             <defaultValue>
                 <booleanValue>false</booleanValue>
             </defaultValue>
-            <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
         </fields>
         <fields>
-            <label>Notas de qualificacao</label>
             <name>QualificationNotes</name>
             <dataType>String</dataType>
             <fieldType>LargeTextArea</fieldType>
+            <label>Notas de qualificacao</label>
             <isRequired>false</isRequired>
         </fields>
         <showFooter>true</showFooter>
@@ -319,8 +319,8 @@ IF({!TimelineDefined}, 1, 0)</expression>
         <allowPause>false</allowPause>
         <fields>
             <name>Msg_Sucesso</name>
-            <fieldText>&lt;p&gt;&lt;strong&gt;Lead qualificado com sucesso!&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Rating definido como &lt;strong&gt;{!NewRating}&lt;/strong&gt; com base no score BANT.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <fieldText>&lt;p&gt;&lt;strong&gt;Lead qualificado com sucesso!&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Rating definido como &lt;strong&gt;{!NewRating}&lt;/strong&gt; com base no score BANT.&lt;/p&gt;</fieldText>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>

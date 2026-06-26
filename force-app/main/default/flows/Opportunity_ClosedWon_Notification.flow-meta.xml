@@ -109,7 +109,6 @@
         <object>Opportunity</object>
         <recordTriggerType>Update</recordTriggerType>
         <scheduledPaths>
-            <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
             <connector>
                 <targetReference>Create_Onboarding_Task</targetReference>
             </connector>
