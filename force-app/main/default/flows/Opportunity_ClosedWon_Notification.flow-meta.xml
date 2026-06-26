@@ -112,6 +112,8 @@
             <connector>
                 <targetReference>Create_Onboarding_Task</targetReference>
             </connector>
+            <label>After Commit</label>
+            <name>AsyncPath</name>
             <pathType>AsyncAfterCommit</pathType>
         </scheduledPaths>
         <triggerType>RecordAfterSave</triggerType>

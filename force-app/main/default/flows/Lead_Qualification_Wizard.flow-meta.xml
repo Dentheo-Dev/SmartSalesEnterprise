@@ -262,49 +262,49 @@ IF({!TimelineDefined}, 1, 0)</expression>
         <fields>
             <name>BudgetConfirmed</name>
             <dataType>Boolean</dataType>
-            <fieldType>InputField</fieldType>
-            <label>Orcamento confirmado?</label>
             <defaultValue>
                 <booleanValue>false</booleanValue>
             </defaultValue>
+            <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
+            <label>Orcamento confirmado?</label>
         </fields>
         <fields>
             <name>AuthorityConfirmed</name>
             <dataType>Boolean</dataType>
-            <fieldType>InputField</fieldType>
-            <label>Fala diretamente com o decisor?</label>
             <defaultValue>
                 <booleanValue>false</booleanValue>
             </defaultValue>
+            <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
+            <label>Fala diretamente com o decisor?</label>
         </fields>
         <fields>
             <name>NeedIdentified</name>
             <dataType>Boolean</dataType>
-            <fieldType>InputField</fieldType>
-            <label>Necessidade claramente identificada?</label>
             <defaultValue>
                 <booleanValue>false</booleanValue>
             </defaultValue>
+            <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
+            <label>Necessidade claramente identificada?</label>
         </fields>
         <fields>
             <name>TimelineDefined</name>
             <dataType>Boolean</dataType>
-            <fieldType>InputField</fieldType>
-            <label>Prazo de decisao definido?</label>
             <defaultValue>
                 <booleanValue>false</booleanValue>
             </defaultValue>
+            <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
+            <label>Prazo de decisao definido?</label>
         </fields>
         <fields>
             <name>QualificationNotes</name>
             <dataType>String</dataType>
             <fieldType>LargeTextArea</fieldType>
-            <label>Notas de qualificacao</label>
             <isRequired>false</isRequired>
+            <label>Notas de qualificacao</label>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
