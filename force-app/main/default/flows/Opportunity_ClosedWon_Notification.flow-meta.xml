@@ -107,7 +107,7 @@
         <locationY>0</locationY>
         <filterFormula>AND(
     ISCHANGED({!$Record.StageName}),
-    {!$Record.StageName} = "Closed Won"
+    ISPICKVAL({!$Record.StageName}, "Closed Won")
 )</filterFormula>
         <object>Opportunity</object>
         <recordTriggerType>CreateAndUpdate</recordTriggerType>
