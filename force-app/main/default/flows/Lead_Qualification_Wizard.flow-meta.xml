@@ -260,8 +260,8 @@ IF({!TimelineDefined}, 1, 0)</expression>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
-            <name>BudgetConfirmed</name>
             <label>Orcamento confirmado?</label>
+            <name>BudgetConfirmed</name>
             <dataType>Boolean</dataType>
             <defaultValue>
                 <booleanValue>false</booleanValue>
@@ -270,8 +270,8 @@ IF({!TimelineDefined}, 1, 0)</expression>
             <isRequired>false</isRequired>
         </fields>
         <fields>
-            <name>AuthorityConfirmed</name>
             <label>Fala diretamente com o decisor?</label>
+            <name>AuthorityConfirmed</name>
             <dataType>Boolean</dataType>
             <defaultValue>
                 <booleanValue>false</booleanValue>
@@ -280,8 +280,8 @@ IF({!TimelineDefined}, 1, 0)</expression>
             <isRequired>false</isRequired>
         </fields>
         <fields>
-            <name>NeedIdentified</name>
             <label>Necessidade claramente identificada?</label>
+            <name>NeedIdentified</name>
             <dataType>Boolean</dataType>
             <defaultValue>
                 <booleanValue>false</booleanValue>
@@ -290,8 +290,8 @@ IF({!TimelineDefined}, 1, 0)</expression>
             <isRequired>false</isRequired>
         </fields>
         <fields>
-            <name>TimelineDefined</name>
             <label>Prazo de decisao definido?</label>
+            <name>TimelineDefined</name>
             <dataType>Boolean</dataType>
             <defaultValue>
                 <booleanValue>false</booleanValue>
@@ -300,11 +300,11 @@ IF({!TimelineDefined}, 1, 0)</expression>
             <isRequired>false</isRequired>
         </fields>
         <fields>
+            <label>Notas de qualificacao</label>
             <name>QualificationNotes</name>
             <dataType>String</dataType>
             <fieldType>LargeTextArea</fieldType>
             <isRequired>false</isRequired>
-            <label>Notas de qualificacao</label>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>

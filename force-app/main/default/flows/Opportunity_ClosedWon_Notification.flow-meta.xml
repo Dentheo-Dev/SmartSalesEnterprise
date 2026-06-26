@@ -105,13 +105,11 @@
     <start>
         <locationX>50</locationX>
         <locationY>0</locationY>
-        <filterFormula>AND(
-    ISCHANGED({!$Record.StageName}),
-    ISPICKVAL({!$Record.StageName}, "Closed Won")
-)</filterFormula>
+        <filterFormula>ISPICKVAL({!$Record.StageName}, "Closed Won")</filterFormula>
         <object>Opportunity</object>
-        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <recordTriggerType>Update</recordTriggerType>
         <scheduledPaths>
+            <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
             <connector>
                 <targetReference>Create_Onboarding_Task</targetReference>
             </connector>
