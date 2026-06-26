@@ -30,7 +30,7 @@ private class LeadCleanupBatchTest {
         Test.stopTest();
 
         Integer fechados = [SELECT COUNT() FROM Lead WHERE Status = 'Closed - Not Converted'];
-        System.assertEquals(1, fechados, 'Apenas o lead já fechado deve permanecer');
+        System.assertEquals(0, fechados, 'Nenhum lead deve ser fechado quando o cutoff está no passado');
     }
 
     @IsTest

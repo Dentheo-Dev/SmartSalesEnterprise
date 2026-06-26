@@ -188,13 +188,14 @@ private class SelectorTest {
 
     @IsTest
     static void testLeadSelectByStatus() {
+        // Lead do setup tem LeadSource='Web' → flow Lead_Auto_Assignment seta Status='Working - Contacted'
         Test.startTest();
-        List<Lead> results = LeadSelector.getInstance().selectByStatus('Open - Not Contacted');
+        List<Lead> results = LeadSelector.getInstance().selectByStatus('Working - Contacted');
         Test.stopTest();
 
         System.assert(!results.isEmpty());
         for (Lead l : results) {
-            System.assertEquals('Open - Not Contacted', l.Status);
+            System.assertEquals('Working - Contacted', l.Status);
         }
     }
 
